@@ -1,0 +1,36 @@
+digraph {
+  graph [label="Dreaming Machine\n ",labelloc=t,fontsize=30,ranksep=1.4];
+  node [style=filled, fillcolor="#bbbbbb"];
+  rankdir=TB;
+
+  # Projects
+
+  ":app" [fillcolor="#baffc9"];
+  ":data-local" [fillcolor="#baffc9"];
+  ":data-remote" [fillcolor="#baffc9"];
+  ":data-repository" [fillcolor="#baffc9"];
+  ":domain" [fillcolor="#baffc9"];
+  ":presentation" [fillcolor="#baffc9"];
+
+  {rank = same;}
+
+  # Dependencies
+
+  ":app" -> ":app"
+  ":app" -> ":presentation" [style=dotted]
+  ":app" -> ":domain" [style=dotted]
+  ":app" -> ":data-remote" [style=dotted]
+  ":app" -> ":data-local" [style=dotted]
+  ":app" -> ":data-repository" [style=dotted]
+  ":presentation" -> ":presentation"
+  ":presentation" -> ":domain" [style=dotted]
+  ":domain" -> ":domain"
+  ":data-remote" -> ":data-remote"
+  ":data-remote" -> ":domain" [style=dotted]
+  ":data-remote" -> ":data-repository" [style=dotted]
+  ":data-local" -> ":data-local"
+  ":data-local" -> ":domain" [style=dotted]
+  ":data-local" -> ":data-repository" [style=dotted]
+  ":data-repository" -> ":data-repository"
+  ":data-repository" -> ":domain" [style=dotted]
+}
