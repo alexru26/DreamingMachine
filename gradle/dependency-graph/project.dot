@@ -1,5 +1,5 @@
 digraph {
-  graph [label="Dreaming Machine\n ",labelloc=t,fontsize=30,ranksep=1.4];
+  graph [ranksep=1.4];
   node [style=filled, fillcolor="#bbbbbb"];
   rankdir=TB;
 

@@ -11,7 +11,7 @@ tasks.register('projectDependencyGraph') {
         dot.delete()
 
         dot << 'digraph {\n'
-        dot << "  graph [label=\"${rootProject.name}\\n \",labelloc=t,fontsize=30,ranksep=1.4];\n"
+        dot << "  graph [ranksep=1.4];\n"
         dot << '  node [style=filled, fillcolor="#bbbbbb"];\n'
         dot << '  rankdir=TB;\n'
 
