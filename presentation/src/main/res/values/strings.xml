@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="discover_screen">Discover</string>
+    <string name="library_screen">Library</string>
+    <string name="settings_screen">Settings</string>
+</resources>
