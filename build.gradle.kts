@@ -9,3 +9,5 @@ plugins {
     alias(libs.plugins.parcelize) apply false
     alias(libs.plugins.hilt) apply false
 }
+
+apply(from = file("gradle/projectDependencyGraph.gradle"))
