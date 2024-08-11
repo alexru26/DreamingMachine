@@ -1,7 +1,7 @@
 package com.alexru.data_remote.source
 
-import com.alexru.data_remote.mapper.toAlbumListing
-import com.alexru.data_remote.mapper.toSong
+import com.alexru.data_remote.util.toAlbumListing
+import com.alexru.data_remote.util.toSong
 import com.alexru.data_remote.networking.DiscographyApi
 import com.alexru.data_repository.data_source.remote.RemoteDataSource
 import com.alexru.domain.model.Album
@@ -37,5 +37,10 @@ class RemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getSong(songId: Int): Song {
         return api.getSong(songId).toSong()
+    }
+
+    override suspend fun downloadSong(songId: Int): ByteArray {
+        val response = api.downloadSong(songId)
+        return response.bytes()
     }
 }

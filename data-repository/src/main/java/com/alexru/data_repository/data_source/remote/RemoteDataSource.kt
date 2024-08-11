@@ -10,11 +10,11 @@ interface RemoteDataSource {
 
     suspend fun getAlbums(): List<Album>
 
-    suspend fun getAlbum(
-        albumId: Int
-    ): Album
+    suspend fun getAlbum(albumId: Int): Album
 
     suspend fun getSongs(albumId: Int): List<Song>
 
     suspend fun getSong(songId: Int): Song
+
+    suspend fun downloadSong(songId: Int): ByteArray
 }

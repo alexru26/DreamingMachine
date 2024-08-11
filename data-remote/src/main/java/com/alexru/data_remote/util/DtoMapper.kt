@@ -1,4 +1,4 @@
-package com.alexru.data_remote.mapper
+package com.alexru.data_remote.util
 
 import com.alexru.data_remote.dto.AlbumDto
 import com.alexru.data_remote.dto.SongDto
