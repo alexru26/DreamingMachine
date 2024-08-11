@@ -32,7 +32,6 @@ fun SongDto.toSong(): Song {
         name = name,
         artist = artist,
         length = length.seconds,
-        cover = cover,
-        url = url,
+        cover = cover
     )
 }

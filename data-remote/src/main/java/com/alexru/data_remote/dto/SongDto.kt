@@ -13,5 +13,4 @@ data class SongDto(
     @field:Json(name = "artist") val artist: String,
     @field:Json(name = "length") val length: Long,
     @field:Json(name = "cover") val cover: String,
-    @field:Json(name = "url") val url: String,
 )

@@ -11,6 +11,5 @@ data class Song(
     val name: String,
     val artist: String,
     val length: Duration,
-    val cover: String,
-    val url: String,
+    val cover: String
 )
