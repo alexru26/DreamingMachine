@@ -18,7 +18,7 @@ interface LocalDataSource {
 
     suspend fun createPlaylist(playlist: Playlist)
 
-    suspend fun updatePlaylistSongs(playlistId: Int, songs: List<Int>)
+    suspend fun updatePlaylistSongs(playlistId: Int, songs: Set<Int>)
 
     suspend fun deletePlaylist(playlistId: Int)
 

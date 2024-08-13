@@ -42,7 +42,7 @@ class LocalDataSourceImpl @Inject constructor(
         playlistDao.createPlaylist(playlist.toPlaylistEntity())
     }
 
-    override suspend fun updatePlaylistSongs(playlistId: Int, songs: List<Int>) {
+    override suspend fun updatePlaylistSongs(playlistId: Int, songs: Set<Int>) {
         playlistDao.updatePlaylistSongs(playlistId, songs)
     }
 

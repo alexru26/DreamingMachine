@@ -10,7 +10,7 @@ class SongsListConverter {
      * TypeConverter from List<Int> to String
      */
     @TypeConverter
-    fun fromIntList(intList: List<Int>): String {
+    fun fromIntList(intList: Set<Int>): String {
         return intList.joinToString(separator = ",")
     }
 
@@ -18,11 +18,11 @@ class SongsListConverter {
      * TypeConverter from String to List<Int>
      */
     @TypeConverter
-    fun toIntList(intString: String): List<Int> {
+    fun toIntList(intString: String): Set<Int> {
         return if (intString.isNotEmpty()) {
-            intString.split(",").map { it.toInt() }
+            intString.split(",").map { it.toInt() }.toSet()
         } else {
-            emptyList()
+            emptySet()
         }
     }
 }

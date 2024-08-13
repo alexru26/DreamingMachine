@@ -13,5 +13,5 @@ import com.alexru.domain.model.Playlist
 data class PlaylistEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val songs: List<Int>
+    val songs: Set<Int>
 )

@@ -91,7 +91,7 @@ class DiscographyRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSongs(songs: List<Int>): Flow<Resource<List<Song>>> {
+    override suspend fun getSongs(songs: Set<Int>): Flow<Resource<List<Song>>> {
         return flow {
             emit(Resource.Loading(true))
 
@@ -120,7 +120,7 @@ class DiscographyRepositoryImpl @Inject constructor(
         localDataSource.createPlaylist(playlist)
     }
 
-    override suspend fun updatePlaylistSongs(playlistId: Int, songs: List<Int>) {
+    override suspend fun updatePlaylistSongs(playlistId: Int, songs: Set<Int>) {
         localDataSource.updatePlaylistSongs(playlistId, songs)
     }
 

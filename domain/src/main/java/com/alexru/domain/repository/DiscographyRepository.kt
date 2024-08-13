@@ -26,7 +26,7 @@ interface DiscographyRepository {
     ): Flow<Resource<List<Song>>>
 
     suspend fun getSongs(
-        songs: List<Int>
+        songs: Set<Int>
     ): Flow<Resource<List<Song>>>
 
     suspend fun createPlaylist(
@@ -35,7 +35,7 @@ interface DiscographyRepository {
 
     suspend fun updatePlaylistSongs(
         playlistId: Int,
-        songs: List<Int>
+        songs: Set<Int>
     )
 
     suspend fun deletePlaylist(

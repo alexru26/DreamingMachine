@@ -132,7 +132,7 @@ fun NewPlaylistButton(
                                     dialogExpanded = false
                                     val playlist = Playlist(
                                         name = textFieldValue,
-                                        songs = emptyList()
+                                        songs = emptySet()
                                     )
                                     onCreatePlaylist(playlist)
                                     textFieldValue = ""

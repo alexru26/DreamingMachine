@@ -144,7 +144,7 @@ class DiscoverInfoScreenViewModel @Inject constructor(
             playlist?.let {
                 val songsList: MutableList<Int> = it.songs.toMutableList()
                 songsList.addAll(state.selectedSongs)
-                repository.updatePlaylistSongs(it.id, songsList.toList())
+                repository.updatePlaylistSongs(it.id, songsList.toSet())
             }
             state = state.copy(
                 selectedSongs = emptyList()

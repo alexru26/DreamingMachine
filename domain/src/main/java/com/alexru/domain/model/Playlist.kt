@@ -6,5 +6,5 @@ package com.alexru.domain.model
 data class Playlist(
     val id: Int = 0,
     val name: String,
-    val songs: List<Int>
+    val songs: Set<Int>
 )
