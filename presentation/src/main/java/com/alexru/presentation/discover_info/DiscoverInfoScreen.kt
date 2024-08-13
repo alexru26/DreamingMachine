@@ -72,7 +72,7 @@ fun DiscoverInfoScreen(
     ) { innerPadding ->
         if(state.error != null) {
             DiscoverInfoErrorScreen(
-                error = state.error,
+                error = state.error.asString(),
                 modifier = Modifier
                     .padding(innerPadding)
             )

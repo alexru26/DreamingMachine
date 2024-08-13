@@ -6,8 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexru.domain.model.Playlist
-import com.alexru.domain.model.Resource
 import com.alexru.domain.repository.DiscographyRepository
+import com.alexru.domain.resource.Result
+import com.alexru.presentation.util.asErrorUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -69,28 +70,9 @@ class LibraryScreenViewModel @Inject constructor(
         query: String = state.searchQuery.lowercase(),
     ) {
         viewModelScope.launch {
-            repository.getPlaylists(query)
-                .collect { result ->
-                    when(result) {
-                        is Resource.Success -> {
-                            result.data?.let { listings ->
-                                state = state.copy(
-                                    playlists = listings,
-                                )
-                            }
-                        }
-                        is Resource.Error -> {
-                            state = state.copy(
-                                error = result.message
-                            )
-                        }
-                        is Resource.Loading -> {
-//                            state = state.copy(
-//                                isLoading = result.isLoading
-//                            )
-                        }
-                    }
-                }
+            state = state.copy(
+                playlists = repository.getPlaylists(query)
+            )
         }
     }
 
@@ -98,7 +80,15 @@ class LibraryScreenViewModel @Inject constructor(
         playlist: Playlist
     ) {
         viewModelScope.launch {
-            repository.createPlaylist(playlist)
+            val result = repository.createPlaylist(playlist)
+            when(result) {
+                is Result.Error -> {
+                    state = state.copy(
+                        error = result.asErrorUiText()
+                    )
+                }
+                else -> Unit
+            }
             getPlaylists()
         }
     }

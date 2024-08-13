@@ -45,6 +45,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    // retrofit
+    implementation(libs.retrofit2.retrofit)
+
     // dagger-hilt
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)

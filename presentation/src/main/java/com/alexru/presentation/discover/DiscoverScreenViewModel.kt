@@ -5,8 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alexru.domain.model.Resource
 import com.alexru.domain.repository.DiscographyRepository
+import com.alexru.domain.resource.Result
+import com.alexru.presentation.util.asErrorUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -56,19 +57,17 @@ class DiscoverScreenViewModel @Inject constructor(
             repository.getAlbums(fetchFromRemote, query)
                 .collect { result ->
                     when(result) {
-                        is Resource.Success -> {
-                            result.data?.let { listings ->
-                                state = state.copy(
-                                    albums = listings,
-                                )
-                            }
-                        }
-                        is Resource.Error -> {
+                        is Result.Success -> {
                             state = state.copy(
-                                error = result.message
+                                albums = result.data,
                             )
                         }
-                        is Resource.Loading -> {
+                        is Result.Error -> {
+                            state = state.copy(
+                                error = result.asErrorUiText()
+                            )
+                        }
+                        is Result.Loading -> {
 //                            state = state.copy(
 //                                isLoading = result.isLoading
 //                            )

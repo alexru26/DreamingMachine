@@ -3,6 +3,7 @@ package com.alexru.presentation.discover_info
 import com.alexru.domain.model.Album
 import com.alexru.domain.model.Playlist
 import com.alexru.domain.model.Song
+import com.alexru.presentation.util.UiText
 
 /**
  * State for Discover Info screen
@@ -15,5 +16,5 @@ data class DiscoverInfoState(
     val openSaveToPlaylistDialog: Boolean = false,
     val isLoading: Boolean = false,
     val searchQuery: String = "",
-    val error: String? = null
+    val error: UiText? = null
 )

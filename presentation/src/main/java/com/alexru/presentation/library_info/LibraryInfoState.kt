@@ -2,6 +2,7 @@ package com.alexru.presentation.library_info
 
 import com.alexru.domain.model.Playlist
 import com.alexru.domain.model.Song
+import com.alexru.presentation.util.UiText
 
 /**
  * State for Library Info screen
@@ -14,5 +15,5 @@ data class LibraryInfoState(
     val openSaveToPlaylistDialog: Boolean = false,
     val isLoading: Boolean = false,
     val searchQuery: String = "",
-    val error: String? = null
+    val error: UiText? = null
 )

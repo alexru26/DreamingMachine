@@ -70,7 +70,7 @@ fun LibraryScreen(
     ) { innerPadding ->
         if(state.error != null) {
             LibraryErrorScreen(
-                error = state.error,
+                error = state.error.asString(),
                 modifier = Modifier
                     .padding(innerPadding)
             )
