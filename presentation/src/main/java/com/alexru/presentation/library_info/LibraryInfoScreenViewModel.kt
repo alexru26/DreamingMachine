@@ -8,10 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alexru.domain.model.Playlist
 import com.alexru.domain.model.Resource
-import com.alexru.domain.model.Song
 import com.alexru.domain.repository.DiscographyRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,14 +25,40 @@ class LibraryInfoScreenViewModel @Inject constructor(
     var state by mutableStateOf(LibraryInfoState())
 
     init {
-        getPlaylists()
         getSongs()
     }
 
-    fun onEvent(event: LibraryInfoEvent) {
-        when(event) {
-            is LibraryInfoEvent.SaveToPlaylist -> {
-                updatePlaylistSongs(event.playlistId, event.songId)
+    fun onEvent(vararg events: LibraryInfoEvent) {
+        events.forEach { event ->
+            when(event) {
+                is LibraryInfoEvent.SelectSong -> {
+                    state = if(event.selected) {
+                        state.copy(
+                            selectedSongs = state.selectedSongs-event.songId
+                        )
+                    } else {
+                        state.copy(
+                            selectedSongs = state.selectedSongs+event.songId
+                        )
+                    }
+                }
+                is LibraryInfoEvent.DeselectAllSongs -> {
+                    state = state.copy(
+                        selectedSongs = emptyList()
+                    )
+                }
+                is LibraryInfoEvent.OpenSaveToPlaylistDialog -> {
+                    getPlaylists()
+                    state = state.copy(
+                        openSaveToPlaylistDialog = true
+                    )
+                }
+                is LibraryInfoEvent.CloseSaveToPlaylistDialog -> {
+                    state = state.copy(
+                        openSaveToPlaylistDialog = false
+                    )
+                }
+                is LibraryInfoEvent.SaveToPlaylist -> updatePlaylistSongs(event.playlistId)
             }
         }
     }
@@ -105,8 +129,7 @@ class LibraryInfoScreenViewModel @Inject constructor(
     }
 
     private fun updatePlaylistSongs(
-        playlistId: Int,
-        songId: Int
+        playlistId: Int
     ) {
         viewModelScope.launch {
             var playlist: Playlist? = null
@@ -120,7 +143,7 @@ class LibraryInfoScreenViewModel @Inject constructor(
             }
             playlist?.let {
                 val songsList: MutableList<Int> = it.songs.toMutableList()
-                songsList.add(songId)
+                songsList.addAll(state.selectedSongs)
                 repository.updatePlaylistSongs(it.id, songsList.toList())
             }
         }

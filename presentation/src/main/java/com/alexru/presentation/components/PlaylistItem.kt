@@ -1,4 +1,4 @@
-package com.alexru.presentation.playlist_item
+package com.alexru.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.DownloadForOffline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -34,8 +34,8 @@ import com.alexru.domain.model.Playlist
 fun PlaylistItem(
     playlist: Playlist,
     modifier: Modifier = Modifier,
-    onOptionsClicked: () -> Unit = {},
-    showOptions: Boolean = true
+    showDownload: Boolean = false,
+    onDownload: () -> Unit = {},
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -71,16 +71,16 @@ fun PlaylistItem(
             )
 
         }
-        if(showOptions) {
+        if(showDownload) {
             Spacer(modifier = Modifier.width(8.dp))
             IconButton(
-                onClick = onOptionsClicked,
+                onClick = onDownload,
                 modifier = Modifier
                     .fillMaxHeight()
             ) {
                 Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "options"
+                    imageVector = Icons.Outlined.DownloadForOffline,
+                    contentDescription = "download"
                 )
             }
         }

@@ -1,4 +1,4 @@
-package com.alexru.presentation.song_item
+package com.alexru.presentation.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.alexru.domain.model.Playlist
-import com.alexru.presentation.playlist_item.PlaylistItem
 
 /**
  * Dialog to display Playlists to save a Song
@@ -70,7 +69,6 @@ fun SaveToPlaylistDialog(
                     items(playlists) { playlist ->
                         PlaylistItem(
                             playlist = playlist,
-                            showOptions = false,
                             modifier = Modifier
                                 .clickable {
                                     saveToPlaylist(playlist.id)

@@ -1,4 +1,4 @@
-package com.alexru.presentation.song_item
+package com.alexru.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.DownloadForOffline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -33,7 +33,7 @@ import com.alexru.domain.model.Song
 @Composable
 fun SongItem(
     song: Song,
-    onOptionsClicked: () -> Unit,
+    onDownload: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -85,13 +85,13 @@ fun SongItem(
         }
         Spacer(modifier = Modifier.width(8.dp))
         IconButton(
-            onClick = onOptionsClicked,
+            onClick = onDownload,
             modifier = Modifier
                 .fillMaxWidth()
         ) {
             Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = "options"
+                imageVector = Icons.Outlined.DownloadForOffline,
+                contentDescription = "download"
             )
         }
     }

@@ -1,4 +1,4 @@
-package com.alexru.presentation.navgraphs
+package com.alexru.presentation.components
 
 import com.ramcosta.composedestinations.annotation.NavGraph
 import com.ramcosta.composedestinations.annotation.RootGraph

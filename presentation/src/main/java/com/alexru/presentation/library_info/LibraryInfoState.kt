@@ -1,6 +1,5 @@
 package com.alexru.presentation.library_info
 
-import com.alexru.domain.model.Album
 import com.alexru.domain.model.Playlist
 import com.alexru.domain.model.Song
 
@@ -9,8 +8,10 @@ import com.alexru.domain.model.Song
  */
 data class LibraryInfoState(
     val playlist: Playlist? = null,
-    val playlists: List<Playlist> = emptyList(),
     val songs: List<Song> = emptyList(),
+    val playlists: List<Playlist> = emptyList(),
+    val selectedSongs: List<Int> = emptyList(),
+    val openSaveToPlaylistDialog: Boolean = false,
     val isLoading: Boolean = false,
     val searchQuery: String = "",
     val error: String? = null

@@ -30,18 +30,36 @@ class LibraryScreenViewModel @Inject constructor(
         getPlaylists()
     }
 
-    fun onEvent(event: LibraryEvent) {
-        when(event) {
-            is LibraryEvent.CreatePlaylist -> createPlaylist(event.playlist)
-            is LibraryEvent.DeletePlaylist -> deletePlaylist(event.playlistId)
-            is LibraryEvent.OnSearchQueryChange -> {
-                state = state.copy(
-                    searchQuery = event.query
-                )
-                searchJob?.cancel()
-                searchJob = viewModelScope.launch {
-                    delay(500L)
-                    getPlaylists()
+    fun onEvent(vararg events: LibraryEvent) {
+        events.forEach { event ->
+            when(event) {
+                is LibraryEvent.SelectPlaylist -> {
+                    state = if(event.selected) {
+                        state.copy(
+                            selectedPlaylists = state.selectedPlaylists-event.playlistId
+                        )
+                    } else {
+                        state.copy(
+                            selectedPlaylists = state.selectedPlaylists+event.playlistId
+                        )
+                    }
+                }
+                is LibraryEvent.DeselectAllSongs -> {
+                    state = state.copy(
+                        selectedPlaylists = emptyList()
+                    )
+                }
+                is LibraryEvent.CreatePlaylist -> createPlaylist(event.playlist)
+                is LibraryEvent.DeletePlaylist -> deletePlaylist()
+                is LibraryEvent.OnSearchQueryChange -> {
+                    state = state.copy(
+                        searchQuery = event.query
+                    )
+                    searchJob?.cancel()
+                    searchJob = viewModelScope.launch {
+                        delay(500L)
+                        getPlaylists()
+                    }
                 }
             }
         }
@@ -85,11 +103,14 @@ class LibraryScreenViewModel @Inject constructor(
         }
     }
 
-    private fun deletePlaylist(
-        playlistId: Int
-    ) {
+    private fun deletePlaylist() {
         viewModelScope.launch {
-            repository.deletePlaylist(playlistId)
+            state.selectedPlaylists.forEach {
+                repository.deletePlaylist(it)
+            }
+            state = state.copy(
+                selectedPlaylists = emptyList()
+            )
             getPlaylists()
         }
     }

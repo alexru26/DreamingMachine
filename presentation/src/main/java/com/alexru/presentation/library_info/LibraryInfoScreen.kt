@@ -1,7 +1,9 @@
 package com.alexru.presentation.library_info
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,28 +17,25 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.alexru.presentation.navgraphs.LibraryGraph
-import com.alexru.presentation.song_item.SaveToPlaylistDialog
-import com.alexru.presentation.song_item.SongItem
-import com.alexru.presentation.song_item.SongItemMenuOption
-import com.alexru.presentation.song_item.SongItemOptionsBottomSheet
+import com.alexru.presentation.components.bottom_bar.SongOptionsBottomMenu
+import com.alexru.presentation.components.LibraryGraph
+import com.alexru.presentation.components.SaveToPlaylistDialog
+import com.alexru.presentation.components.SongItem
+import com.alexru.presentation.util.selectedBackground
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 /**
@@ -44,42 +43,58 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
  */
 @Composable
 @Destination<LibraryGraph>
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun LibraryInfoScreen(
     navigator: DestinationsNavigator,
     playlistId: Int,
     viewModel: LibraryInfoScreenViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
-    if(state.error != null) {
-        LibraryInfoErrorScreen(state.error)
-    }
-    else if(state.isLoading) {
-        LibraryInfoLoadingScreen()
-    }
-    else {
-        LibraryInfoMainScreen(
-            navigator = navigator,
-            state = state,
-            viewModel = viewModel
-        )
+
+    Scaffold(
+        bottomBar = {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.BottomEnd,
+            ) {
+                SongOptionsBottomMenu(
+                    visible = state.selectedSongs.isNotEmpty(),
+                    onSaveToPlaylist = { viewModel.onEvent(LibraryInfoEvent.OpenSaveToPlaylistDialog) },
+                    onDownload = {  }
+                )
+            }
+        }
+    ) {
+        if(state.error != null) {
+            LibraryInfoErrorScreen(
+                error = state.error,
+                modifier = Modifier
+            )
+        }
+        else if(state.isLoading) {
+            LibraryInfoLoadingScreen(
+                modifier = Modifier
+            )
+        }
+        else {
+            LibraryInfoMainScreen(
+                state = state,
+                viewModel = viewModel
+            )
+        }
     }
 }
 
 /**
  * Stateless Library Info main screen
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LibraryInfoMainScreen(
-    navigator: DestinationsNavigator,
     state: LibraryInfoState,
     viewModel: LibraryInfoScreenViewModel,
     modifier: Modifier = Modifier
 ) {
-    var openSavePlaylistBottomSheet by rememberSaveable { mutableStateOf(false) }
-    var openOptionsBottomSheet by rememberSaveable { mutableStateOf(false) }
-
-    var selectedSongId by rememberSaveable { mutableIntStateOf(0) }
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -109,16 +124,22 @@ fun LibraryInfoMainScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
                 items(state.songs) { song ->
+                    val haptic = LocalHapticFeedback.current
+                    val selected = state.selectedSongs.contains(song.songId)
                     SongItem(
                         song = song,
-                        onOptionsClicked = {
-                            selectedSongId = song.songId
-                            openOptionsBottomSheet = true
-                        },
+                        onDownload = { },
                         modifier = Modifier
-                            .clickable {
-
-                            }
+                            .combinedClickable(
+                                onClick = {},
+                                onLongClick = {
+                                    viewModel.onEvent(
+                                        LibraryInfoEvent.SelectSong(song.songId, selected)
+                                    )
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                }
+                            )
+                            .selectedBackground(selected)
                             .padding(
                                 vertical = 2.dp,
                                 horizontal = 16.dp
@@ -130,30 +151,20 @@ fun LibraryInfoMainScreen(
         }
     }
 
-    // TODO: Everything about this is scuffed ngl
-    if(openOptionsBottomSheet) {
-        SongItemOptionsBottomSheet(
-            onDismissRequest = { openOptionsBottomSheet = false },
-            onOptionClicked = { option ->
-                openOptionsBottomSheet = false
-                when(option) {
-                    SongItemMenuOption.SaveToPlaylist -> {
-                        openSavePlaylistBottomSheet = true
-                    }
-                }
-            }
-        )
-    }
-
-    if(openSavePlaylistBottomSheet) {
+    if(state.openSaveToPlaylistDialog) {
         SaveToPlaylistDialog(
             playlists = state.playlists,
-            onDismissRequest = { openSavePlaylistBottomSheet = false },
+            onDismissRequest = {
+                viewModel.onEvent(
+                    LibraryInfoEvent.CloseSaveToPlaylistDialog
+                )
+            },
             saveToPlaylist = { playlistId ->
                 viewModel.onEvent(
-                    LibraryInfoEvent.SaveToPlaylist(playlistId, selectedSongId)
+                    LibraryInfoEvent.SaveToPlaylist(playlistId),
+                    LibraryInfoEvent.CloseSaveToPlaylistDialog,
+                    LibraryInfoEvent.DeselectAllSongs
                 )
-                openSavePlaylistBottomSheet = false
             },
             modifier = Modifier
                 .fillMaxSize()

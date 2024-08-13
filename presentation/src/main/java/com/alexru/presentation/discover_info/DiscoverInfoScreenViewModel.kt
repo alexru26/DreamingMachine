@@ -26,14 +26,40 @@ class DiscoverInfoScreenViewModel @Inject constructor(
     var state by mutableStateOf(DiscoverInfoState())
 
     init {
-        getPlaylists()
         getSongs()
     }
 
-    fun onEvent(event: DiscoverInfoEvent) {
-        when(event) {
-            is DiscoverInfoEvent.SaveToPlaylist -> {
-                updatePlaylistSongs(event.playlistId, event.songId)
+    fun onEvent(vararg events: DiscoverInfoEvent) {
+        events.forEach { event ->
+            when(event) {
+                is DiscoverInfoEvent.SelectSong -> {
+                    state = if(event.selected) {
+                        state.copy(
+                            selectedSongs = state.selectedSongs-event.songId
+                        )
+                    } else {
+                        state.copy(
+                            selectedSongs = state.selectedSongs+event.songId
+                        )
+                    }
+                }
+                is DiscoverInfoEvent.DeselectAllSongs -> {
+                    state = state.copy(
+                        selectedSongs = emptyList()
+                    )
+                }
+                is DiscoverInfoEvent.OpenSaveToPlaylistDialog -> {
+                    getPlaylists()
+                    state = state.copy(
+                        openSaveToPlaylistDialog = true
+                    )
+                }
+                is DiscoverInfoEvent.CloseSaveToPlaylistDialog -> {
+                    state = state.copy(
+                        openSaveToPlaylistDialog = false
+                    )
+                }
+                is DiscoverInfoEvent.SaveToPlaylist -> updatePlaylistSongs(event.playlistId)
             }
         }
     }
@@ -103,8 +129,7 @@ class DiscoverInfoScreenViewModel @Inject constructor(
     }
 
     private fun updatePlaylistSongs(
-        playlistId: Int,
-        songId: Int
+        playlistId: Int
     ) {
         viewModelScope.launch {
             var playlist: Playlist? = null
@@ -118,7 +143,7 @@ class DiscoverInfoScreenViewModel @Inject constructor(
             }
             playlist?.let {
                 val songsList: MutableList<Int> = it.songs.toMutableList()
-                songsList.add(songId)
+                songsList.addAll(state.selectedSongs)
                 repository.updatePlaylistSongs(it.id, songsList.toList())
             }
         }

@@ -38,7 +38,7 @@ import com.alexru.domain.model.Playlist
  */
 @Composable
 fun NewPlaylistButton(
-    viewModel: LibraryScreenViewModel,
+    onCreatePlaylist: (Playlist) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var dialogExpanded by remember { mutableStateOf(false) }
@@ -134,9 +134,8 @@ fun NewPlaylistButton(
                                         name = textFieldValue,
                                         songs = emptyList()
                                     )
-                                    viewModel.onEvent(
-                                        LibraryEvent.CreatePlaylist(playlist)
-                                    )
+                                    onCreatePlaylist(playlist)
+                                    textFieldValue = ""
                                 } else {
                                     isError = true
                                 }

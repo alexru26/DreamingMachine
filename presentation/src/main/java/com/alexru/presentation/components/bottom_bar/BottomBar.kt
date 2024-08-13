@@ -1,4 +1,4 @@
-package com.alexru.presentation.bottom_bar
+package com.alexru.presentation.components.bottom_bar
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -9,12 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.spec.DestinationSpec
-import com.ramcosta.composedestinations.spec.DirectionNavGraphSpec
 import com.ramcosta.composedestinations.utils.currentDestinationAsState
-import com.ramcosta.composedestinations.utils.destination
 import com.ramcosta.composedestinations.utils.rememberDestinationsNavigator
 import com.ramcosta.composedestinations.utils.startDestination
 
@@ -36,7 +33,7 @@ fun BottomBar(
         modifier = modifier
     ) {
         BottomBarDestination.entries.forEach { destination ->
-            val isCurrentDestination = currentDestination == destination.direction
+            val isCurrentDestination = destination.navGraph.destinations.contains(currentDestination)
             NavigationBarItem(
                 selected = isCurrentDestination,
                 onClick = {
@@ -56,9 +53,9 @@ fun BottomBar(
                         }
 
                         // Avoid multiple copies of the same destination when
-                        // reselecting the same item
+                        // re-selecting the same item
                         launchSingleTop = true
-                        // Restore state when reselecting a previously selected item
+                        // Restore state when re-selecting a previously selected item
                         restoreState = true
                     }
                 },

@@ -7,6 +7,7 @@ import com.alexru.domain.model.Playlist
  */
 data class LibraryState(
     val playlists: List<Playlist> = emptyList(),
+    val selectedPlaylists: List<Int> = emptyList(),
     val isLoading: Boolean = false,
     val searchQuery: String = "",
     val error: String? = null

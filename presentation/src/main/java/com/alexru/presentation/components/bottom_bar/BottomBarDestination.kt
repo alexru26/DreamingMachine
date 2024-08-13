@@ -1,4 +1,4 @@
-package com.alexru.presentation.bottom_bar
+package com.alexru.presentation.components.bottom_bar
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
@@ -12,18 +12,35 @@ import com.ramcosta.composedestinations.generated.destinations.LibraryScreenDest
 import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
 import com.ramcosta.composedestinations.generated.navgraphs.DiscoverNavGraph
 import com.ramcosta.composedestinations.generated.navgraphs.LibraryNavGraph
+import com.ramcosta.composedestinations.generated.navgraphs.RootNavGraph
 import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
-import com.ramcosta.composedestinations.spec.DirectionNavGraphSpec
+import com.ramcosta.composedestinations.spec.NavGraphSpec
 
 /**
  * Destinations for [BottomBar]
  */
 enum class BottomBarDestination(
     val direction: DirectionDestinationSpec,
+    val navGraph: NavGraphSpec,
     val icon: ImageVector,
     @StringRes val label: Int
 ) {
-    Library(LibraryScreenDestination, Icons.Default.LibraryMusic, R.string.library_screen),
-    Discover(DiscoverScreenDestination, Icons.Default.Explore, R.string.discover_screen),
-    Settings(SettingsScreenDestination, Icons.Default.Settings, R.string.settings_screen)
+    Library(
+        direction = LibraryScreenDestination,
+        navGraph = LibraryNavGraph,
+        icon = Icons.Default.LibraryMusic,
+        label = R.string.library_screen
+    ),
+    Discover(
+        direction = DiscoverScreenDestination,
+        navGraph = DiscoverNavGraph,
+        icon = Icons.Default.Explore,
+        label = R.string.discover_screen
+    ),
+    Settings(
+        direction = SettingsScreenDestination,
+        navGraph = RootNavGraph,
+        icon = Icons.Default.Settings,
+        label = R.string.settings_screen
+    )
 }
