@@ -1,6 +1,5 @@
 package com.alexru.presentation.library_info
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -30,22 +29,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.alexru.presentation.components.bottom_bar.SongOptionsBottomMenu
-import com.alexru.presentation.components.LibraryGraph
 import com.alexru.presentation.components.SaveToPlaylistDialog
 import com.alexru.presentation.components.SongItem
+import com.alexru.presentation.components.bottom_bar.BottomBar
 import com.alexru.presentation.util.selectedBackground
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 /**
  * Stateful Library Info screen
  */
 @Composable
-@Destination<LibraryGraph>
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun LibraryInfoScreen(
-    navigator: DestinationsNavigator,
+    navController: NavHostController,
     playlistId: Int,
     viewModel: LibraryInfoScreenViewModel = hiltViewModel()
 ) {
@@ -57,6 +53,11 @@ fun LibraryInfoScreen(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.BottomEnd,
             ) {
+                BottomBar(
+                    visible = state.selectedSongs.isEmpty(),
+                    navController = navController,
+                    currentScreen = "library"
+                )
                 SongOptionsBottomMenu(
                     visible = state.selectedSongs.isNotEmpty(),
                     onSaveToPlaylist = { viewModel.onEvent(LibraryInfoEvent.OpenSaveToPlaylistDialog) },
@@ -64,22 +65,26 @@ fun LibraryInfoScreen(
                 )
             }
         }
-    ) {
+    ) { innerPaddings ->
         if(state.error != null) {
             LibraryInfoErrorScreen(
                 error = state.error,
                 modifier = Modifier
+                    .padding(innerPaddings)
             )
         }
         else if(state.isLoading) {
             LibraryInfoLoadingScreen(
                 modifier = Modifier
+                    .padding(innerPaddings)
             )
         }
         else {
             LibraryInfoMainScreen(
                 state = state,
-                viewModel = viewModel
+                viewModel = viewModel,
+                modifier = Modifier
+                    .padding(innerPaddings)
             )
         }
     }

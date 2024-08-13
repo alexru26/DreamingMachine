@@ -1,6 +1,5 @@
 package com.alexru.presentation.discover_info
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
@@ -27,23 +26,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.alexru.presentation.components.bottom_bar.SongOptionsBottomMenu
-import com.alexru.presentation.components.DiscoverGraph
 import com.alexru.presentation.components.SaveToPlaylistDialog
 import com.alexru.presentation.components.SongItem
+import com.alexru.presentation.components.bottom_bar.BottomBar
 import com.alexru.presentation.util.selectedBackground
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 /**
  * Stateful Discover Info screen
  */
 @Composable
-@Destination<DiscoverGraph>
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun DiscoverInfoScreen(
-    navigator: DestinationsNavigator,
+    navController: NavHostController,
     albumId: Int,
     viewModel: DiscoverInfoScreenViewModel = hiltViewModel()
 ) {
@@ -55,6 +51,11 @@ fun DiscoverInfoScreen(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.BottomEnd,
             ) {
+                BottomBar(
+                    visible = state.selectedSongs.isEmpty(),
+                    navController = navController,
+                    currentScreen = "discover"
+                )
                 SongOptionsBottomMenu(
                     visible = state.selectedSongs.isNotEmpty(),
                     onSaveToPlaylist = { viewModel.onEvent(DiscoverInfoEvent.OpenSaveToPlaylistDialog) },
@@ -62,21 +63,26 @@ fun DiscoverInfoScreen(
                 )
             }
         }
-    ) {
+    ) { innerPadding ->
         if(state.error != null) {
             DiscoverInfoErrorScreen(
-                error = state.error
+                error = state.error,
+                modifier = Modifier
+                    .padding(innerPadding)
             )
         }
         else if(state.isLoading) {
             DiscoverInfoLoadingScreen(
-
+                modifier = Modifier
+                    .padding(innerPadding)
             )
         }
         else {
             DiscoverInfoMainScreen(
                 state = state,
-                viewModel = viewModel
+                viewModel = viewModel,
+                modifier = Modifier
+                    .padding(innerPadding)
             )
         }
     }

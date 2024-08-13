@@ -23,23 +23,20 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.alexru.presentation.components.bottom_bar.PlaylistOptionsBottomMenu
-import com.alexru.presentation.components.LibraryGraph
 import com.alexru.presentation.components.PlaylistItem
+import com.alexru.presentation.components.bottom_bar.BottomBar
 import com.alexru.presentation.components.top_bar.LibraryTopBar
 import com.alexru.presentation.util.selectedBackground
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.generated.destinations.LibraryInfoScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 /**
  * Stateful Library screen
  */
 @Composable
-@Destination<LibraryGraph>(start = true)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun LibraryScreen(
-    navigator: DestinationsNavigator,
+    navController: NavHostController,
+    onPlaylistClick: (Int) -> Unit,
     viewModel: LibraryScreenViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -56,32 +53,41 @@ fun LibraryScreen(
         bottomBar = {
             Box(
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.BottomEnd,
+                contentAlignment = Alignment.BottomEnd
             ) {
+                BottomBar(
+                    visible = state.selectedPlaylists.isEmpty(),
+                    navController = navController,
+                    currentScreen = "library"
+                )
                 PlaylistOptionsBottomMenu(
                     visible = state.selectedPlaylists.isNotEmpty(),
                     onDeletePlaylist = { viewModel.onEvent(LibraryEvent.DeletePlaylist) },
-                    onDownload = { })
+                    onDownload = { }
+                )
             }
         }
-    ) {
+    ) { innerPadding ->
         if(state.error != null) {
             LibraryErrorScreen(
                 error = state.error,
                 modifier = Modifier
+                    .padding(innerPadding)
             )
         }
         else if(state.isLoading) {
             LibraryLoadingScreen(
                 modifier = Modifier
+                    .padding(innerPadding)
             )
         }
         else {
             LibraryMainScreen(
-                navigator = navigator,
                 state = state,
                 viewModel = viewModel,
+                onPlaylistClick = onPlaylistClick,
                 modifier = Modifier
+                    .padding(innerPadding)
             )
         }
     }
@@ -93,9 +99,9 @@ fun LibraryScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LibraryMainScreen(
-    navigator: DestinationsNavigator,
     state: LibraryState,
     viewModel: LibraryScreenViewModel,
+    onPlaylistClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -132,12 +138,7 @@ fun LibraryMainScreen(
                     modifier = Modifier
                         .combinedClickable(
                             onClick = {
-                                navigator.navigate(
-                                    LibraryInfoScreenDestination(playlist.id)
-                                ) {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                                onPlaylistClick(playlist.id)
                             },
                             onLongClick = {
                                 viewModel.onEvent(

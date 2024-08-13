@@ -18,7 +18,7 @@ coil = "2.7.0"
 
 ksp = "2.0.0-1.0.23"
 
-compose-destinations = "2.1.0-beta02"
+navigation-compose = "2.8.0-alpha08"
 
 gson = "2.11.0"
 
@@ -28,6 +28,8 @@ okhttp = "5.0.0-alpha.3"
 retrofit = "2.9.0"
 
 parcelize = "2.0.0"
+
+serialization = "1.6.3"
 
 hilt = "2.51.1"
 hiltCompiler = "1.2.0"
@@ -58,9 +60,8 @@ androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text
 # coil
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
-# compose nav destinations
-compose-destinations-core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "compose-destinations" }
-compose-destinations-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "compose-destinations" }
+# navigation compose
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
 
 # gson
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
@@ -76,6 +77,9 @@ okhttp3-okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp
 retrofit2-converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
 retrofit2-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
+# serialization
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}
+
 # dagger-hilt
 hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompiler" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltCompiler" }
@@ -90,4 +94,5 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
 parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "parcelize"}
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

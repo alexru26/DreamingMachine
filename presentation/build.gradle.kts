@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
 }
 
@@ -61,9 +62,11 @@ dependencies {
     // coil
     implementation(libs.coil.compose)
 
-    // compose nav destinations
-    implementation(libs.compose.destinations.core)
-    ksp(libs.compose.destinations.ksp)
+    // navigation compose
+    implementation(libs.navigation.compose)
+
+    // serialization
+    implementation(libs.kotlinx.serialization.json)
 
     // dagger-hilt
     ksp(libs.hilt.compiler)

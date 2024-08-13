@@ -79,10 +79,6 @@ dependencies {
     // google fonts
     implementation(libs.androidx.ui.text.google.fonts)
 
-    // compose nav destinations
-    implementation(libs.compose.destinations.core)
-    ksp(libs.compose.destinations.ksp)
-
     // dagger-hilt
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)

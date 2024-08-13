@@ -18,21 +18,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.alexru.presentation.components.DiscoverGraph
+import androidx.navigation.NavHostController
 import com.alexru.presentation.components.PullToRefreshLazyVerticalGrid
+import com.alexru.presentation.components.bottom_bar.BottomBar
 import com.alexru.presentation.components.top_bar.DiscoverTopBar
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.generated.destinations.DiscoverInfoScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 /**
  * Stateful Discover screen
  */
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-@Destination<DiscoverGraph>(start = true)
 fun DiscoverScreen(
-    navigator: DestinationsNavigator,
+    navController: NavHostController,
+    onAlbumClick: (Int) -> Unit,
     viewModel: DiscoverScreenViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -40,24 +37,35 @@ fun DiscoverScreen(
     Scaffold(
         topBar = {
             DiscoverTopBar()
+        },
+        bottomBar = {
+            BottomBar(
+                visible = true,
+                navController = navController,
+                currentScreen = "discover"
+            )
         }
-    ) {
-        // TODO: I HATE NAVIGATION
+    ) { innerPadding ->
         if(state.error != null) {
             DiscoverErrorScreen(
-                error = state.error
+                error = state.error,
+                modifier = Modifier
+                    .padding(innerPadding)
             )
         }
         else if(state.isLoading && !state.isRefreshing) {
             DiscoverLoadingScreen(
-
+                modifier = Modifier
+                    .padding(innerPadding)
             )
         }
         else {
             DiscoverMainScreen(
-                navigator = navigator,
                 state = state,
-                viewModel = viewModel
+                viewModel = viewModel,
+                onAlbumClick = onAlbumClick,
+                modifier = Modifier
+                    .padding(innerPadding)
             )
         }
     }
@@ -68,9 +76,9 @@ fun DiscoverScreen(
  */
 @Composable
 fun DiscoverMainScreen(
-    navigator: DestinationsNavigator,
     state: DiscoverState,
     viewModel: DiscoverScreenViewModel,
+    onAlbumClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -102,12 +110,7 @@ fun DiscoverMainScreen(
                         .fillMaxWidth()
                         .padding(8.dp)
                         .clickable {
-                            navigator.navigate(
-                                DiscoverInfoScreenDestination(album.id)
-                            ) {
-                                launchSingleTop = true
-                                restoreState = true
-                            }
+                            onAlbumClick(album.id)
                         }
                 )
             },

@@ -1,5 +1,12 @@
 package com.alexru.presentation.components.bottom_bar
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -9,48 +16,48 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
-import com.ramcosta.composedestinations.generated.NavGraphs
-import com.ramcosta.composedestinations.spec.DestinationSpec
-import com.ramcosta.composedestinations.utils.currentDestinationAsState
-import com.ramcosta.composedestinations.utils.rememberDestinationsNavigator
-import com.ramcosta.composedestinations.utils.startDestination
+import com.alexru.presentation.R
+import com.alexru.presentation.navigation.Discover
+import com.alexru.presentation.navigation.DiscoverScreenDestination
+import com.alexru.presentation.navigation.Library
+import com.alexru.presentation.navigation.LibraryScreenDestination
 
 /**
  * Main Bottom Navigation Bar
  */
 @Composable
 fun BottomBar(
+    visible: Boolean,
     navController: NavHostController,
+    currentScreen: String,
     modifier: Modifier = Modifier
 ) {
-    val currentDestination: DestinationSpec = navController.currentDestinationAsState().value
-        ?: NavGraphs.root.startDestination
-
-    val navigator = navController.rememberDestinationsNavigator()
-
-    NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-        modifier = modifier
+    AnimatedVisibility(
+        visible = visible,
+        enter = expandVertically(animationSpec = tween(delayMillis = 300)),
+        exit = shrinkVertically(animationSpec = tween()),
     ) {
-        BottomBarDestination.entries.forEach { destination ->
-            val isCurrentDestination = destination.navGraph.destinations.contains(currentDestination)
+        NavigationBar(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            modifier = modifier
+        ) {
             NavigationBarItem(
-                selected = isCurrentDestination,
+                selected = currentScreen == "library",
                 onClick = {
-                    if (isCurrentDestination) {
+                    if (currentScreen == "library") {
                         // When we click again on a bottom bar item and it was already selected
                         // we want to pop the back stack until the initial destination of this bottom bar item
-                        navigator.popBackStack(destination.direction, false)
+                        navController.popBackStack(LibraryScreenDestination, inclusive = false)
                         return@NavigationBarItem
                     }
 
-                    navigator.navigate(destination.direction) {
+                    navController.navigate(Library) {
                         // Pop up to the root of the graph to
                         // avoid building up a large stack of destinations
                         // on the back stack as users select items
-                        popUpTo(NavGraphs.root) {
-                            saveState = true
-                        }
+//                    popUpTo(Library) {
+//                        saveState = true
+//                    }
 
                         // Avoid multiple copies of the same destination when
                         // re-selecting the same item
@@ -61,11 +68,44 @@ fun BottomBar(
                 },
                 icon = {
                     Icon(
-                        imageVector = destination.icon,
-                        contentDescription = stringResource(id = destination.label)
+                        imageVector = Icons.Default.LibraryMusic,
+                        contentDescription = "library"
                     )
                 },
-                label = { Text(text = stringResource(id = destination.label)) }
+                label = { Text(text = stringResource(R.string.library_screen)) }
+            )
+            NavigationBarItem(
+                selected = currentScreen == "discover",
+                onClick = {
+                    if (currentScreen == "discover") {
+                        // When we click again on a bottom bar item and it was already selected
+                        // we want to pop the back stack until the initial destination of this bottom bar item
+                        navController.popBackStack(DiscoverScreenDestination, inclusive = false)
+                        return@NavigationBarItem
+                    }
+
+                    navController.navigate(Discover) {
+                        // Pop up to the root of the graph to
+                        // avoid building up a large stack of destinations
+                        // on the back stack as users select items
+//                    popUpTo(DiscoverScreenDestination) {
+//                        saveState = true
+//                    }
+
+                        // Avoid multiple copies of the same destination when
+                        // re-selecting the same item
+                        launchSingleTop = true
+                        // Restore state when re-selecting a previously selected item
+                        restoreState = true
+                    }
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Explore,
+                        contentDescription = "discover"
+                    )
+                },
+                label = { Text(text = stringResource(R.string.discover_screen)) }
             )
         }
     }
