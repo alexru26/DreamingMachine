@@ -6,5 +6,6 @@ This is a dedicated app to play music by Susumu Hirasawa.
 
 ## Goals
 - Make the song player work
+- Handle save to playlist logic
 - Add filters
 - Add download songs feature
