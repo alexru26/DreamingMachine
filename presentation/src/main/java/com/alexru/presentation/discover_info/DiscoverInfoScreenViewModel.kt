@@ -146,6 +146,9 @@ class DiscoverInfoScreenViewModel @Inject constructor(
                 songsList.addAll(state.selectedSongs)
                 repository.updatePlaylistSongs(it.id, songsList.toList())
             }
+            state = state.copy(
+                selectedSongs = emptyList()
+            )
         }
     }
 }

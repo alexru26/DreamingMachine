@@ -34,6 +34,7 @@ import com.alexru.presentation.components.bottom_bar.SongOptionsBottomMenu
 import com.alexru.presentation.components.SaveToPlaylistDialog
 import com.alexru.presentation.components.SongItem
 import com.alexru.presentation.components.bottom_bar.BottomBar
+import com.alexru.presentation.components.top_bar.LibraryInfoTopBar
 import com.alexru.presentation.util.selectedBackground
 
 /**
@@ -48,6 +49,11 @@ fun LibraryInfoScreen(
     val state = viewModel.state
 
     Scaffold(
+        topBar = {
+            LibraryInfoTopBar(
+                onBackClick = { navController.navigateUp() }
+            )
+        },
         bottomBar = {
             Box(
                 modifier = Modifier.fillMaxWidth(),
@@ -106,7 +112,6 @@ fun LibraryInfoMainScreen(
             .fillMaxSize()
     ) {
         state.playlist?.let {
-            Spacer(modifier = Modifier.height(48.dp))
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -167,8 +172,7 @@ fun LibraryInfoMainScreen(
             saveToPlaylist = { playlistId ->
                 viewModel.onEvent(
                     LibraryInfoEvent.SaveToPlaylist(playlistId),
-                    LibraryInfoEvent.CloseSaveToPlaylistDialog,
-                    LibraryInfoEvent.DeselectAllSongs
+                    LibraryInfoEvent.CloseSaveToPlaylistDialog
                 )
             },
             modifier = Modifier

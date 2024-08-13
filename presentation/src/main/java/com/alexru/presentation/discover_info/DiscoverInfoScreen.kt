@@ -32,6 +32,7 @@ import com.alexru.presentation.components.bottom_bar.SongOptionsBottomMenu
 import com.alexru.presentation.components.SaveToPlaylistDialog
 import com.alexru.presentation.components.SongItem
 import com.alexru.presentation.components.bottom_bar.BottomBar
+import com.alexru.presentation.components.top_bar.DiscoverInfoTopBar
 import com.alexru.presentation.util.selectedBackground
 
 /**
@@ -46,6 +47,11 @@ fun DiscoverInfoScreen(
     val state = viewModel.state
 
     Scaffold(
+        topBar = {
+            DiscoverInfoTopBar(
+                onBackClick = { navController.navigateUp() }
+            )
+        },
         bottomBar = {
             Box(
                 modifier = Modifier.fillMaxWidth(),
@@ -104,7 +110,6 @@ fun DiscoverInfoMainScreen(
             .fillMaxSize()
     ) {
         state.album?.let {
-            Spacer(modifier = Modifier.height(48.dp))
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -166,8 +171,7 @@ fun DiscoverInfoMainScreen(
             saveToPlaylist = { playlistId ->
                 viewModel.onEvent(
                     DiscoverInfoEvent.SaveToPlaylist(playlistId),
-                    DiscoverInfoEvent.CloseSaveToPlaylistDialog,
-                    DiscoverInfoEvent.DeselectAllSongs
+                    DiscoverInfoEvent.CloseSaveToPlaylistDialog
                 )
             },
             modifier = Modifier
