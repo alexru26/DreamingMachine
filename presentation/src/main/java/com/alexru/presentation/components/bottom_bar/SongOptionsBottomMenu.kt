@@ -37,7 +37,7 @@ fun SongOptionsBottomMenu(
 ) {
     AnimatedVisibility(
         visible = visible,
-        enter = expandVertically(animationSpec = tween(delayMillis = 300)),
+        enter = expandVertically(animationSpec = tween()),
         exit = shrinkVertically(animationSpec = tween()),
     ) {
         Surface(
