@@ -48,10 +48,12 @@ class LibraryInfoScreenViewModel @Inject constructor(
                     )
                 }
                 is LibraryInfoEvent.OpenSaveToPlaylistDialog -> {
-                    getPlaylists()
-                    state = state.copy(
-                        openSaveToPlaylistDialog = true
-                    )
+                    viewModelScope.launch {
+                        state = state.copy(
+                            playlists = repository.getPlaylists(""),
+                            openSaveToPlaylistDialog = true
+                        )
+                    }
                 }
                 is LibraryInfoEvent.CloseSaveToPlaylistDialog -> {
                     state = state.copy(
@@ -90,14 +92,6 @@ class LibraryInfoScreenViewModel @Inject constructor(
                         }
                     }
             }
-        }
-    }
-
-    private fun getPlaylists() {
-        viewModelScope.launch {
-            state = state.copy(
-                playlists = repository.getPlaylists("")
-            )
         }
     }
 

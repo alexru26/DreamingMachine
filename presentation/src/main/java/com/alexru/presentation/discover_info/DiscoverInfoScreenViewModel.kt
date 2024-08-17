@@ -49,10 +49,12 @@ class DiscoverInfoScreenViewModel @Inject constructor(
                     )
                 }
                 is DiscoverInfoEvent.OpenSaveToPlaylistDialog -> {
-                    getPlaylists()
-                    state = state.copy(
-                        openSaveToPlaylistDialog = true
-                    )
+                    viewModelScope.launch {
+                        state = state.copy(
+                            playlists = repository.getPlaylists(""),
+                            openSaveToPlaylistDialog = true
+                        )
+                    }
                 }
                 is DiscoverInfoEvent.CloseSaveToPlaylistDialog -> {
                     state = state.copy(
@@ -94,14 +96,6 @@ class DiscoverInfoScreenViewModel @Inject constructor(
                         }
                     }
                 }
-        }
-    }
-
-    private fun getPlaylists() {
-        viewModelScope.launch {
-            state = state.copy(
-                playlists = repository.getPlaylists("")
-            )
         }
     }
 
